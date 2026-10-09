@@ -1,0 +1,57 @@
+<!-- templates/blog/post_detail.html -->
+{% extends 'blog/base.html' %}
+
+<!-- ==================== BLOK PARAMETER SEO GOOGLE & SOSMED ==================== -->
+<!-- 1. Judul Tab Browser Dinamis Sesuai Judul Artikel -->
+{% block title %}{{ post.title }} — {{ NAMA_SITUS|default:"SYSTEM.IO" }}{% endblock %}
+
+<!-- 2. Deskripsi Pencarian Google Otomatis Mengambil 150 Karakter Konten -->
+{% block meta_description %}{{ post.content|striptags|truncatechars:150 }}{% endblock %}
+
+<!-- 3. Metadata Open Graph Dinamis Untuk Pratinjau Share Sosmed -->
+{% block og_title %}{{ post.title }}{% endblock %}
+{% block og_description %}{{ post.content|striptags|truncatechars:150 }}{% endblock %}
+
+
+<!-- ==================== BLOK KONTEN UTAMA ARTIKEL ==================== -->
+{% block content %}
+<style>
+    /* CSS Profesional agar gambar responsif dan proporsional di dalam artikel */
+    .text-secondary img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 1.5rem auto;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+</style>
+
+<div class="row my-4">
+    <div class="col-lg-12">
+        
+        <!-- Tombol Kembali ke Beranda Minimalis -->
+        <a href="{% url 'home' %}" class="btn btn-light btn-sm mb-4 text-secondary fw-semibold border" style="font-size: 0.85rem; border-color: #ededed !important;">
+            &larr; Kembali
+        </a>
+
+        <article>
+            <!-- Judul Utama Artikel Utuh -->
+            <h1 class="display-6 fw-bold text-dark mb-3" style="letter-spacing: -0.04em;">{{ post.title }}</h1>
+            
+            <!-- Metadata Tanggal dan Jam Rilis Dinamis -->
+            <div class="text-muted small d-flex align-items-center mb-4 pb-3 border-bottom font-monospace" style="font-size: 0.75rem; border-bottom-color: #eeeeee !important;">
+                <span class="me-3">👤 Oleh <strong>Admin</strong></span>
+                <span class="me-3">📅 {{ post.created_at|date:"d M Y" }}</span>
+                <span>🕒 {{ post.created_at|date:"H:i" }} WIB</span>
+            </div>
+
+            <!-- Isi Konten Utuh dengan Filter Safe agar Gambar CKEditor Muncul Visual -->
+            <div class="text-secondary leading-relaxed fs-5">
+                {{ post.content|safe }}
+            </div>
+        </article>
+
+    </div>
+</div>
+{% endblock %}

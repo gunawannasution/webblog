@@ -1,0 +1,79 @@
+<!-- templates/home.html -->
+{% extends 'blog/base.html' %}
+
+{% block title %}Beranda Blog - Artikel Terbaru{% endblock %}
+
+{% block content %}
+<div class="row my-4">
+    <div class="col-lg-8 mx-auto">
+        <h1 class="mb-4 text-dark border-bottom pb-2">Artikel Terbaru</h1>
+
+        <!-- Memulai Perulangan -->
+        {% for post in list_postingan %}
+            <article class="card shadow-sm mb-4 border-0 bg-light">
+                <div class="card-body p-4">
+                    <!-- Judul Artikel -->
+                    <h2 class="card-title h3 text-primary mb-3">{{ post.title }}</h2>
+                    
+                    <!-- Isi Konten (Dipotong maksimal 25 kata agar rapi) -->
+                    <p class="card-text text-secondary leading-relaxed">
+                        {{ post.content|striptags|truncatewords:25 }}
+                    </p>
+                    
+                    <!-- Tombol Aksi -->
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <a href="{% url 'post_detail' post.slug %}" class="btn btn-outline-primary btn-sm px-3 rounded-pill">
+                            Baca Selengkapnya &rarr;
+                        </a>
+                    </div>
+                </div>
+            </article>
+        {% empty %}
+            <!-- Tampilan jika database masih kosong -->
+            <div class="alert alert-info text-center py-5 shadow-sm" role="alert">
+                <h4 class="alert-heading">Belum Ada Artikel</h4>
+                <p class="mb-0">Silakan tambahkan data postingan baru melalui halaman Django Admin Anda.</p>
+            </div>
+        {% endfor %}
+        <!-- Mengakhiri Perulangan -->
+         
+        <!-- ==================== NAVIGASI PAGINASI MINIMALIS ==================== -->
+        {% if list_postingan.has_other_pages %}
+            <nav class="d-flex justify-content-between align-items-center mt-5 pt-4 border-top" style="border-top-color: #ededed !important;">
+                
+                <!-- Tombol Halaman Sebelumnya (Previous) -->
+                <div>
+                    {% if list_postingan.has_previous %}
+                        <a href="?page={{ list_postingan.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" 
+                           class="text-decoration-none text-dark small fw-medium">
+                            &larr; Previous
+                        </a>
+                    {% else %}
+                        <span class="text-muted small font-monospace" style="opacity: 0.4;">&larr; Previous</span>
+                    {% endif %}
+                </div>
+
+                <!-- Info Indikator Angka Halaman -->
+                <div class="text-muted font-monospace" style="font-size: 0.78rem;">
+                    Page {{ list_postingan.number }} of {{ list_postingan.paginator.num_pages }}
+                </div>
+
+                <!-- Tombol Halaman Selanjutnya (Next) -->
+                <div>
+                    {% if list_postingan.has_next %}
+                        <a href="?page={{ list_postingan.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" 
+                           class="text-decoration-none text-dark small fw-medium">
+                            Next &rarr;
+                        </a>
+                    {% else %}
+                        <span class="text-muted small font-monospace" style="opacity: 0.4;">Next &rarr;</span>
+                    {% endif %}
+                </div>
+
+            </nav>
+        {% endif %}
+
+
+    </div>
+</div>
+{% endblock %}
